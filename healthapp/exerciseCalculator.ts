@@ -41,9 +41,9 @@ export const calculateExercise = (
     }) / periodLength;
 
   const percentage = average / target;
-  let ratingDescription = "";
-  let rating = 0;
-  let success = false;
+  let rating: number;
+  let ratingDescription: string;
+
   if (percentage < 0.5) {
     rating = 1;
     ratingDescription = "Not met the target. Need to improve";
@@ -53,13 +53,12 @@ export const calculateExercise = (
   } else {
     rating = 3;
     ratingDescription = "Perfect! Exceeding Expectations!";
-    success = true;
   }
 
   return {
     periodLength,
     trainingDays,
-    success,
+    success: percentage >= 1,
     rating,
     ratingDescription,
     target,

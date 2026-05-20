@@ -5,6 +5,9 @@ import { calculateExercise } from "./exerciseCalculator.ts";
 const app = express();
 app.use(express.json());
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
+
 app.get("/hello", (_req, res) => {
   res.send("Hello Full Stack!");
 });
@@ -29,21 +32,23 @@ app.get("/bmi", (req, res) => {
 });
 
 app.post("/exercises", (req, res) => {
-  const { target, daily_exercises } = req.body;
-  if (!daily_exercises || !target) {
+  const body: unknown = req.body;
+  if (!isRecord(body) || !("daily_exercises" in body) || !("target" in body)) {
     return res.status(400).send({ error: "parameters missing" });
   }
+
+  const { target, daily_exercises } = body;
   if (
     typeof target !== "number" ||
-    isNaN(Number(target)) ||
+    Number.isNaN(target) ||
     !Array.isArray(daily_exercises) ||
     !daily_exercises.every(
-      (num) => typeof num === "number" && !Number.isNaN(num),
+      (num): num is number => typeof num === "number" && !Number.isNaN(num),
     )
   ) {
     return res.status(400).json({ error: "malformatted parameters" });
   }
-  return res.json(calculateExercise(daily_exercises, Number(target)));
+  return res.json(calculateExercise(daily_exercises, target));
 });
 
 const PORT = 3000;
