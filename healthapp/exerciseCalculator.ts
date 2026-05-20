@@ -29,7 +29,7 @@ const parseArguments = (args: string[]): Exercises => {
   };
 };
 
-const calculateExercise = (
+export const calculateExercise = (
   dailyExercises: number[],
   target: number,
 ): ExerciseResult => {
@@ -68,8 +68,10 @@ const calculateExercise = (
 };
 
 try {
-  const { target, daily } = parseArguments(process.argv);
-  console.log(calculateExercise(daily, target));
+  if (process.argv[1] === import.meta.filename) {
+    const { target, daily } = parseArguments(process.argv);
+    console.log(calculateExercise(daily, target));
+  }
 } catch (error: unknown) {
   let errorMessage = "Something bad happened.";
   if (error instanceof Error) {

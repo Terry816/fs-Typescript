@@ -17,7 +17,7 @@ const parseArgument = (args: string[]): Specs => {
   }
 };
 
-const calculateBmi = (height: number, weight: number) => {
+export const calculateBmi = (height: number, weight: number) => {
   const h = (height / 100) ** 2;
   const bmi = weight / h;
   switch (true) {
@@ -37,12 +37,16 @@ const calculateBmi = (height: number, weight: number) => {
       return "Obese (Class 2)";
     case bmi >= 40:
       return "Obese (Class 3)";
+    default:
+      return "Cannot compute";
   }
 };
 
 try {
-  const { height, weight } = parseArgument(process.argv);
-  console.log(calculateBmi(height, weight));
+  if (process.argv[1] === import.meta.filename) {
+    const { height, weight } = parseArgument(process.argv);
+    console.log(calculateBmi(height, weight));
+  }
 } catch (error: unknown) {
   let errorMessage = "Something bad happened.";
   if (error instanceof Error) {
